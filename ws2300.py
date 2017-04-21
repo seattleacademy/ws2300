@@ -1004,6 +1004,20 @@ class WindDirectionConversion(Conversion):
   def parse(self, str):
     return float(str)
 
+class WindDirectionConversionText(Conversion):
+  directions = [ "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                 "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" ];
+  def __init__(self):
+    Conversion.__init__(self, "", 1, "North=0 clockwise")
+  def binary2value(self, data):
+    return data[0]
+  def value2binary(self, value):
+    return (value,)
+  def str(self, value):
+    return self.directions[value]
+  def parse(self, str):
+    return self.directions.index(str.upper()) * 22.5;
+
 class WindVelocityConversion(Conversion):
   def __init__(self):
     Conversion.__init__(self, "ms,d", 4, "wind speed and direction")
@@ -1196,6 +1210,7 @@ conv_hist	= HistoryConversion()
 conv_stmp	= TimestampConversion()
 conv_time	= TimeConversion()
 conv_wdir	= WindDirectionConversion()
+conv_wdtx	= WindDirectionConversionText()
 conv_wvel	= WindVelocityConversion()
 conv_conn	= TextConversion({0:"cable", 3:"lost", 15:"wireless"})
 conv_fore	= TextConversion({0:"rainy", 1:"cloudy", 2:"sunny"})
@@ -1454,6 +1469,7 @@ Measure(0x528, "wsv",  conv_wvld, "wind speed validity")
 Measure(0x529, "wv",   conv_wvel, "wind velocity")
 Measure(0x529, "ws",   conv_wspd, "wind speed")
 Measure(0x52c, "w0",   conv_wdir, "wind direction")
+Measure(0x52c, "wt",   conv_wdtx, "wind direction text")
 Measure(0x52d, "w1",   conv_wdir, "wind direction 1")
 Measure(0x52e, "w2",   conv_wdir, "wind direction 2")
 Measure(0x52f, "w3",   conv_wdir, "wind direction 3")
